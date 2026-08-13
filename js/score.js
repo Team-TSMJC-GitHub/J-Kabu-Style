@@ -1,7 +1,7 @@
-import { MAIN_QUESTIONS } from "./data.js";
+import { MAIN_QUESTIONS, SCALE_MAX } from "./data.js";
 
 /**
- * mainAnswers: { [questionId]: aPoints(0-3) }
+ * mainAnswers: { [questionId]: aPoints(0-SCALE_MAX) }
  * returns: { GH: {a,b}, LT: {a,b}, AV: {a,b}, WC: {a,b} }  (percentages 0-100)
  */
 export function computeAxisPercents(mainAnswers) {
@@ -10,7 +10,7 @@ export function computeAxisPercents(mainAnswers) {
     const aPts = mainAnswers[q.id];
     if (aPts === undefined) return;
     totals[q.axis].a += aPts;
-    totals[q.axis].b += 3 - aPts;
+    totals[q.axis].b += SCALE_MAX - aPts;
   });
   const pct = {};
   Object.entries(totals).forEach(([axis, { a, b }]) => {
