@@ -14,6 +14,7 @@ const state = {
 };
 
 function esc(s) {
+  if (s === undefined || s === null) return "";
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
@@ -58,17 +59,17 @@ function typeImageHTML(code, type, { big = false } = {}) {
   const sizeClass = big ? "type-image--big" : "";
   return `
     <div class="type-image ${sizeClass}" style="--type-color:${type.color}">
-      <img
-        src="${type.image}"
-        alt="${esc(type.jp)}のキャラクター画像"
-        loading="lazy"
-        onerror="this.remove()"
-      />
       <div class="type-image__placeholder">
         <span class="type-image__emoji">${type.emoji}</span>
         <span class="mono type-image__ph-label">CHARACTER PLACEHOLDER</span>
         <span class="mono type-image__ph-code">${code}</span>
       </div>
+      <img
+        src="${esc(type.image)}"
+        alt="${esc(type.jp)}のキャラクター画像"
+        loading="lazy"
+        onerror="this.remove()"
+      />
     </div>`;
 }
 
