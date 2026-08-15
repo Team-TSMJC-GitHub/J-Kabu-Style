@@ -1,4 +1,4 @@
-import { MAIN_QUESTIONS, SCALE, SECTOR_QUESTIONS, TYPES, TOTAL_STEPS } from "./data.js";
+import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, TOTAL_STEPS } from "./data.js";
 import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js";
 import { renderRadarSVG } from "./radar.js";
 
@@ -98,6 +98,44 @@ function bindTypeCards() {
   });
 }
 
+/* --------------------------- axis legend --------------------------- */
+
+// 4つの軸（8つの頭文字）の意味を説明する凡例。ホーム画面用。
+function axisLegendHTML() {
+  const rows = Object.values(AXIS_META).map(
+    (m) => `
+      <div class="legend-row">
+        <span class="legend-letter mono">${m.aLetter}</span>
+        <span class="legend-name">${esc(m.aName)}</span>
+        <span class="legend-sep mono">/</span>
+        <span class="legend-letter mono">${m.bLetter}</span>
+        <span class="legend-name">${esc(m.bName)}</span>
+      </div>`
+  ).join("");
+  return `
+    <div class="axis-legend">
+      <p class="mono muted center small legend-title">CODEの読み方（4つの軸）</p>
+      ${rows}
+    </div>`;
+}
+
+// 特定タイプのコードを1文字ずつ意味に分解する。タイプ詳細ページ用。
+function typeAxisDecodeHTML(code) {
+  const axes = ["GH", "LT", "AV", "WC"];
+  const rows = axes.map((axisKey, i) => {
+    const m = AXIS_META[axisKey];
+    const letter = code[i];
+    const isA = letter === m.aLetter;
+    const name = isA ? m.aName : m.bName;
+    return `
+      <div class="decode-row">
+        <span class="mono decode-letter">${letter}</span>
+        <span class="decode-name">${esc(name)}</span>
+      </div>`;
+  }).join("");
+  return `<div class="type-axis-decode">${rows}</div>`;
+}
+
 /* -------------------------------- home ---------------------------------- */
 
 function renderHome() {
@@ -115,6 +153,7 @@ function renderHome() {
         <p class="lead">性格・価値観・行動から、あなたに合った日本株投資スタイルを診断します。</p>
         <button id="start-btn" class="btn btn--primary">3分で診断する <span class="chev">›</span></button>
         <p class="mono meta">30 QUESTIONS · 16 TYPES</p>
+        ${axisLegendHTML()}
       </div>
 
       <section class="type-gallery">
@@ -163,11 +202,19 @@ function renderTypeDetail(code) {
         ${typeImageHTML(code, type, { big: true })}
         <div class="type-detail__intro">
           <p class="mono type-detail__code">${code}</p>
+          ${typeAxisDecodeHTML(code)}
           <p class="type-detail__emoji">${type.emoji}</p>
           <h1 class="display type-detail__jp">${esc(type.jp)}</h1>
           <p class="mono gold type-detail__en">${esc(type.en)}</p>
           <p class="lead type-detail__catch">${esc(type.catchphrase)}</p>
         </div>
+      </div>
+
+      <div class="type-quote" style="--type-color:${type.color}">
+        <span class="type-quote__mark type-quote__mark--open">“</span>
+        <p class="type-quote__text">${esc(type.quote)}</p>
+        <span class="type-quote__mark type-quote__mark--close">”</span>
+        <p class="mono type-quote__attr">— ${esc(type.mythology)}</p>
       </div>
 
       <div class="type-detail__body">
@@ -210,7 +257,7 @@ function renderTypeDetail(code) {
 function renderMain() {
   const q = MAIN_QUESTIONS[state.mainIndex];
   const circles = SCALE.map(
-    (s) => `<button class="circle-btn" data-value="${s.value}" style="--size:${s.size}px" aria-label="${s.value}"></button>`
+    (s) => `<button class="circle-btn" data-value="${s.value}" data-hint="${esc(s.label)}" style="--size:${s.size}px" aria-label="${esc(s.label)}" title="${esc(s.label)}"></button>`
   ).join("");
 
   root.innerHTML = `
@@ -227,6 +274,7 @@ function renderMain() {
           <p class="display statement">${esc(q.b)}</p>
         </div>
 
+        <p class="mono center circle-scale__hint" id="circle-hint">${esc(SCALE_DEFAULT_HINT)}</p>
         <div class="circle-scale">
           <span class="mono circle-scale__label">Aに近い</span>
           <div class="circle-scale__row">${circles}</div>
@@ -235,11 +283,30 @@ function renderMain() {
       </div>
     </div>`;
 
+  const hintEl = document.getElementById("circle-hint");
   let locked = false;
+
   root.querySelectorAll(".circle-btn").forEach((btn) => {
+    const showHint = () => {
+      hintEl.textContent = btn.dataset.hint;
+      hintEl.classList.add("circle-scale__hint--active");
+    };
+    const resetHint = () => {
+      if (locked) return;
+      hintEl.textContent = SCALE_DEFAULT_HINT;
+      hintEl.classList.remove("circle-scale__hint--active");
+    };
+    // デスクトップ：ホバーでガイドを表示。スマホ：タップ開始時点で表示（タップ即選択の前に見える）。
+    btn.addEventListener("mouseenter", showHint);
+    btn.addEventListener("mouseleave", resetHint);
+    btn.addEventListener("focus", showHint);
+    btn.addEventListener("blur", resetHint);
+    btn.addEventListener("touchstart", showHint, { passive: true });
+
     btn.addEventListener("click", () => {
       if (locked) return;
       locked = true;
+      showHint();
       btn.classList.add("circle-btn--selected");
       setTimeout(() => {
         state.mainAnswers[q.id] = Number(btn.dataset.value);
@@ -249,7 +316,7 @@ function renderMain() {
           state.view = "sector";
         }
         render();
-      }, 200);
+      }, 220);
     });
   });
 }
