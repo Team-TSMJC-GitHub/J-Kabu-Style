@@ -149,4 +149,15 @@ export const AXIS_META = {
   WC: { aLetter: "W", bLetter: "C", aName: "分散型 Wide", bName: "集中型 Concentrated" },
 };
 
+/**
+ * 16タイプを4つのグループにまとめる分類（MBTI系診断でよく見られる「グループ分け」表現）。
+ * キーはタイプコードの先頭2文字（軸1+軸2）。パステルカラーで視覚的にグルーピングする。
+ */
+export const GROUPS = {
+  GL: { emoji: "🌾", name: "長期・育成・安定系", sub: "落ち着き・育てる・未来志向", color: "#CFE3C0" },
+  GT: { emoji: "🛡️", name: "慎重・戦略・精密系", sub: "分析・守り・集中", color: "#C3D3E8" },
+  HL: { emoji: "🚀", name: "成長・探索・革新系", sub: "行動力・未来志向・挑戦", color: "#F4D9A0" },
+  HT: { emoji: "🔥", name: "戦略・トレンド・勝負系", sub: "情報感度・瞬発力・大胆", color: "#EAB6B0" },
+};
+
 export const TOTAL_STEPS = MAIN_QUESTIONS.length + SECTOR_QUESTIONS.length; // 30

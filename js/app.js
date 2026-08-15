@@ -1,4 +1,4 @@
-import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, TOTAL_STEPS } from "./data.js";
+import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, TOTAL_STEPS } from "./data.js";
 import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js";
 import { renderRadarSVG } from "./radar.js";
 
@@ -54,9 +54,13 @@ function progressBarHTML(current, total) {
 
 /* --------------------------- type image / card --------------------------- */
 
-// 画像プレースホルダー。/images/types/{CODE}.webp が配置されれば自動でそちらが表示される。
-function typeImageHTML(code, type, { big = false } = {}) {
+// 画像プレースホルダー。images/types/{CODE}.webp が配置されれば自動でそちらが表示される。
+// showCaption: 大きい画像に、モチーフとなった神話キャラクター名をキャプション表示する（詳細ページ用）。
+function typeImageHTML(code, type, { big = false, showCaption = false } = {}) {
   const sizeClass = big ? "type-image--big" : "";
+  const caption = showCaption && type.mythology
+    ? `<div class="type-image__caption"><span class="mono">${esc(type.mythology)}</span></div>`
+    : "";
   return `
     <div class="type-image ${sizeClass}" style="--type-color:${type.color}">
       <div class="type-image__placeholder">
@@ -70,7 +74,15 @@ function typeImageHTML(code, type, { big = false } = {}) {
         loading="lazy"
         onerror="this.remove()"
       />
+      ${caption}
     </div>`;
+}
+
+// グループ（GL/GT/HL/HT）のパステルカラーバッジ
+function groupBadgeHTML(code) {
+  const g = GROUPS[code.slice(0, 2)];
+  if (!g) return "";
+  return `<span class="group-badge" style="--group-color:${g.color}">${g.emoji} ${esc(g.name)}</span>`;
 }
 
 function typeCardHTML(code, type) {
@@ -78,6 +90,7 @@ function typeCardHTML(code, type) {
     <button class="type-card" data-code="${code}" style="--type-color:${type.color}">
       ${typeImageHTML(code, type)}
       <div class="type-card__body">
+        ${groupBadgeHTML(code)}
         <div class="type-card__title-row">
           <span class="type-card__emoji">${type.emoji}</span>
           <div>
@@ -139,7 +152,21 @@ function typeAxisDecodeHTML(code) {
 /* -------------------------------- home ---------------------------------- */
 
 function renderHome() {
-  const cards = Object.entries(TYPES).map(([code, t]) => typeCardHTML(code, t)).join("");
+  const groupSections = Object.entries(GROUPS).map(([groupCode, g]) => {
+    const codesInGroup = Object.keys(TYPES).filter((c) => c.startsWith(groupCode));
+    const cards = codesInGroup.map((c) => typeCardHTML(c, TYPES[c])).join("");
+    return `
+      <div class="group-section">
+        <div class="group-header" style="--group-color:${g.color}">
+          <span class="group-header__emoji">${g.emoji}</span>
+          <div>
+            <p class="group-header__name">${esc(g.name)}（${groupCode}系）</p>
+            <p class="mono group-header__sub">${esc(g.sub)}</p>
+          </div>
+        </div>
+        <div class="type-grid">${cards}</div>
+      </div>`;
+  }).join("");
 
   root.innerHTML = `
     <div class="screen screen--wide screen--home">
@@ -160,7 +187,7 @@ function renderHome() {
         <p class="mono accent center label label--lg">16 TYPES</p>
         <h2 class="display center gallery-heading">日本株投資家には、16のタイプがある。</h2>
         <p class="lead center gallery-sub">気になるタイプをタップすると、詳しいプロフィールを見ることができます。</p>
-        <div class="type-grid">${cards}</div>
+        ${groupSections}
       </section>
 
       <section class="cta-block">
@@ -199,9 +226,10 @@ function renderTypeDetail(code) {
       <button id="back-btn" class="back-link mono">← 16タイプ一覧へ戻る</button>
 
       <div class="type-detail__hero" style="--type-color:${type.color}">
-        ${typeImageHTML(code, type, { big: true })}
+        ${typeImageHTML(code, type, { big: true, showCaption: true })}
         <div class="type-detail__intro">
           <p class="mono type-detail__code">${code}</p>
+          ${groupBadgeHTML(code)}
           ${typeAxisDecodeHTML(code)}
           <p class="type-detail__emoji">${type.emoji}</p>
           <h1 class="display type-detail__jp">${esc(type.jp)}</h1>
@@ -402,7 +430,7 @@ function renderResult() {
         <div class="hanko__ring mono">${code}</div>
       </div>
 
-      ${typeImageHTML(code, type, { big: true })}
+      ${typeImageHTML(code, type, { big: true, showCaption: true })}
 
       <p class="center result-emoji">${type.emoji}</p>
       <h1 class="display center result-name">${esc(type.jp)}</h1>

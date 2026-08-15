@@ -68,24 +68,26 @@ html, body {
 /* ---------- axis legend (home) ---------- */
 .axis-legend {
   margin-top: 40px;
-  padding: 20px;
+  padding: 20px 24px;
   border: 1px solid var(--border);
   background: var(--panel);
-  max-width: 340px;
+  max-width: 380px;
+  width: 100%;
 }
 .legend-title { margin: 0 0 14px; letter-spacing: 0.15em; }
 .legend-row {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font-size: 12.5px;
+  font-size: 12px;
   padding: 6px 0;
   border-bottom: 1px solid var(--track);
+  white-space: nowrap;
 }
 .legend-row:last-child { border-bottom: none; }
 .legend-letter { color: var(--gold); font-weight: 700; width: 14px; flex-shrink: 0; }
-.legend-name { color: var(--text); flex: 1; }
-.legend-sep { color: var(--muted-2); }
+.legend-name { color: var(--text); flex: 1 1 auto; white-space: nowrap; }
+.legend-sep { color: var(--muted-2); flex-shrink: 0; }
 
 /* ---------- type axis decode (type detail) ---------- */
 .type-axis-decode { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 0 14px; }
@@ -230,6 +232,49 @@ html, body {
 
 .type-image--big { aspect-ratio: 4 / 3; }
 .type-image--big .type-image__emoji { font-size: 84px; }
+
+/* キャラクター名（神話モチーフ）のキャプション */
+.type-image__caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 22px 20px 14px;
+  background: linear-gradient(to top, rgba(0,0,0,.72), transparent);
+  text-align: center;
+}
+.type-image__caption span {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0,0,0,.6);
+}
+
+/* ---------- group badge (GL / GT / HL / HT) ---------- */
+.group-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  color: #1a1e27;
+  background: var(--group-color, var(--gold));
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+/* ---------- gallery group sections ---------- */
+.group-section { margin-bottom: 48px; }
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-left: 4px solid var(--group-color, var(--gold));
+  background: color-mix(in srgb, var(--group-color) 10%, var(--panel));
+  margin-bottom: 20px;
+}
+.group-header__emoji { font-size: 26px; }
+.group-header__name { font-size: 15px; font-weight: 700; color: var(--cream); margin: 0; }
+.group-header__sub { font-size: 10.5px; letter-spacing: 0.06em; color: var(--group-color, var(--muted)); margin: 3px 0 0; }
 
 /* ---------- CTA block (between gallery and footer) ---------- */
 .cta-block {
