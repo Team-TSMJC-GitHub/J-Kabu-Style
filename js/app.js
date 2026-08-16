@@ -1,6 +1,7 @@
-import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, TOTAL_STEPS } from "./data.js";
+import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, BROKER_LINKS, LINE_LINK, TOTAL_STEPS } from "./data.js";
 import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js";
 import { renderRadarSVG } from "./radar.js";
+import { trackEvent, trackPageView, trackOutboundClick } from "./analytics.js";
 
 const root = document.getElementById("app");
 
@@ -28,7 +29,8 @@ function goToType(code) {
   location.hash = `#/types/${code}`;
 }
 
-function startQuiz() {
+function startQuiz(position = "unknown") {
+  trackEvent("diagnosis_start", { start_position: position });
   state.view = "main";
   state.mainIndex = 0;
   state.sectorIndex = 0;
@@ -200,8 +202,8 @@ function renderHome() {
       </div>
     </div>`;
 
-  document.getElementById("start-btn").addEventListener("click", startQuiz);
-  document.getElementById("cta-diagnose-btn").addEventListener("click", startQuiz);
+  document.getElementById("start-btn").addEventListener("click", () => startQuiz("home_hero"));
+  document.getElementById("cta-diagnose-btn").addEventListener("click", () => startQuiz("home_cta"));
   bindTypeCards();
 }
 
@@ -213,6 +215,8 @@ function renderTypeDetail(code) {
     goHome();
     return;
   }
+
+  trackEvent("type_detail_view", { type_code: code, type_name: type.jp });
 
   const featureItems = type.features.map((f) => `<li>✦ ${esc(f)}</li>`).join("");
   const cautionItems = type.cautions.map((c) => `<li>⚠️ ${esc(c)}</li>`).join("");
@@ -273,7 +277,7 @@ function renderTypeDetail(code) {
 
   document.getElementById("back-btn").addEventListener("click", goHome);
   document.getElementById("back-btn-2").addEventListener("click", goHome);
-  document.getElementById("diagnose-cta").addEventListener("click", startQuiz);
+  document.getElementById("diagnose-cta").addEventListener("click", () => startQuiz("type_detail"));
 
   requestAnimationFrame(() => {
     root.querySelector(".type-detail__hero").classList.add("type-detail__hero--in");
@@ -391,6 +395,8 @@ function renderResult() {
   const dna = computeDNA(pct);
   const sectorTop = computeSectorTop(state.sectorCounts);
 
+  trackEvent("diagnosis_complete", { type_code: code, type_name: type.jp });
+
   const radarData = [
     { axis: "G", value: pct.GH.a }, { axis: "H", value: pct.GH.b },
     { axis: "L", value: pct.LT.a }, { axis: "T", value: pct.LT.b },
@@ -459,6 +465,20 @@ function renderResult() {
         <p class="disclaimer">※代表例は投資スタイルをイメージするための参考です。投資哲学・行動特性が近い例として紹介しており、本人・機関が本診断タイプに該当すると公言しているものではありません。</p>
       </div>
 
+      <div class="broker-block">
+        <p class="mono accent label">${esc(type.jp)}タイプにおすすめの証券会社（準備中）</p>
+        <div class="broker-list">
+          ${BROKER_LINKS.map((b) => `
+            <a href="${esc(b.url)}" target="_blank" rel="noopener noreferrer" class="broker-link" data-broker="${esc(b.name)}">
+              <span>${esc(b.label)}</span>
+              <span class="broker-link__arrow">↗</span>
+            </a>`).join("")}
+        </div>
+        <p class="disclaimer">※現在は仮リンクです。正式なサービス開始まで実際の口座開設はできません。</p>
+
+        <a href="${esc(LINE_LINK)}" target="_blank" rel="noopener noreferrer" id="line-link" class="btn btn--line btn--block">LINE公式アカウントで最新情報を受け取る（準備中）</a>
+      </div>
+
       <div class="action-stack">
         <button id="type-page-btn" class="btn btn--outline btn--block">${esc(type.jp)}の詳細ページを見る</button>
         <button id="share-btn" class="btn btn--primary btn--block">結果をシェアする</button>
@@ -476,8 +496,30 @@ function renderResult() {
 
   document.getElementById("type-page-btn").addEventListener("click", () => goToType(code));
 
+  root.querySelectorAll(".broker-link").forEach((el) => {
+    el.addEventListener("click", () => {
+      trackOutboundClick({
+        category: "broker",
+        name: el.dataset.broker,
+        typeCode: code,
+        typeName: type.jp,
+        position: "result_page",
+      });
+    });
+  });
+
+  document.getElementById("line-link").addEventListener("click", () => {
+    trackOutboundClick({
+      category: "line",
+      typeCode: code,
+      typeName: type.jp,
+      position: "result_page",
+    });
+  });
+
   document.getElementById("share-btn").addEventListener("click", async () => {
     const btn = document.getElementById("share-btn");
+    trackOutboundClick({ category: "sns", name: "share_button", typeCode: code, typeName: type.jp, position: "result_page" });
     try {
       if (navigator.share) {
         await navigator.share({ text: shareText });
@@ -514,18 +556,21 @@ function render() {
 
 // URLハッシュ（#/types/CODE）でタイプ詳細ページに直接リンクできるようにする。
 // GitHub Pages 等の静的ホスティングでもサーバー設定なしでリロード・共有が可能。
+// Hash Routerはブラウザの実ページ遷移を伴わないため、遷移のたびにGA4へ明示的にpage_viewを送る。
 function handleHashChange() {
   const match = location.hash.match(/^#\/types\/([A-Za-z]+)$/);
   if (match && TYPES[match[1]]) {
     state.view = "typeDetail";
     state.typeCode = match[1];
     render();
+    trackPageView(`/types/${match[1]}`, `${TYPES[match[1]].jp} | J-KABU TYPE`);
     return;
   }
   if (location.hash === "" || location.hash === "#/") {
     if (state.view === "typeDetail") {
       state.view = "home";
       render();
+      trackPageView("/", "J-KABU TYPE");
     }
   }
 }
@@ -533,5 +578,6 @@ function handleHashChange() {
 window.addEventListener("hashchange", handleHashChange);
 
 // 初回表示：ハッシュ付きでアクセスされた場合はそのタイプ詳細ページを直接表示する。
+// 初回のpage_viewはindex.html内のgtag('config', ...)が自動送信するため、ここでは重複送信しない。
 handleHashChange();
 if (!location.hash) render();

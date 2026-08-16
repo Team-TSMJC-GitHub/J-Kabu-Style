@@ -161,3 +161,18 @@ export const GROUPS = {
 };
 
 export const TOTAL_STEPS = MAIN_QUESTIONS.length + SECTOR_QUESTIONS.length; // 30
+
+/**
+ * 証券会社・LINE公式アカウントへの送客リンク。
+ * 現時点では仮URLだが、実際のアフィリエイトURL・LINE公式アカウントURLが決まり次第、
+ * ここを書き換えるだけで全画面（診断結果画面）のリンク先が切り替わる。
+ * クリック計測（js/analytics.js の trackOutboundClick）はURLの中身に依存しないため、
+ * 差し替えてもGA4計測は壊れない。
+ */
+export const BROKER_LINKS = [
+  { name: "Broker_A", label: "証券会社A（仮）", url: "https://example.com/broker-a" },
+  { name: "Broker_B", label: "証券会社B（仮）", url: "https://example.com/broker-b" },
+  { name: "Broker_C", label: "証券会社C（仮）", url: "https://example.com/broker-c" },
+];
+
+export const LINE_LINK = "https://example.com/line"; // LINE公式アカウント開設後にURLを差し替える

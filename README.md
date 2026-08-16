@@ -80,6 +80,34 @@ npx serve .
 - 16タイプの説明文や代表的投資家を変更する場合は `js/data.js` の `TYPES` を編集してください。
 - 判定ロジックを変更する場合は `js/score.js` のみを編集してください（データ定義から独立しています）。
 
+## GA4（Google Analytics 4）計測
+
+`index.html` の `<head>` に GA4 タグ（測定ID: `G-990KPVYYC9`）を設置済みです。以下のイベントを匿名で計測します（氏名・メール・電話番号などの個人情報は一切送信しません）。
+
+| イベント名 | 発火タイミング | 主なパラメータ |
+|---|---|---|
+| `diagnosis_start` | 「診断する」系ボタンを押したとき | `start_position`（home_hero / home_cta / type_detail） |
+| `diagnosis_complete` | 診断結果画面が表示されたとき | `type_code`, `type_name` |
+| `type_detail_view` | タイプ詳細ページ（`#/types/CODE`）を表示したとき | `type_code`, `type_name` |
+| `broker_click` | 診断結果画面の証券会社リンクをクリックしたとき | `broker_name`, `type_code`, `type_name`, `link_position` |
+| `line_click` | 診断結果画面のLINEボタンをクリックしたとき | `type_code`, `type_name`, `link_position` |
+| `share_click` | 「結果をシェアする」ボタンを押したとき | `type_code`, `type_name`, `link_position` |
+| `page_view` | Hash Routerでの画面遷移時（ブラウザの実ページ遷移を伴わないため手動送信） | `page_path`, `page_title` |
+
+計測ロジックは `js/analytics.js` に共通化しており、新しい送客リンク（メール登録・その他サービス等）を追加する場合は、既存の `broker-link` / `line-link` と同様に `trackOutboundClick({ category, name, typeCode, typeName, position })` を呼び出すだけで対応できます。
+
+### 証券会社・LINEリンクの差し替え方
+
+`js/data.js` の `BROKER_LINKS` ・ `LINE_LINK` を書き換えるだけで、診断結果画面のリンク先が切り替わります（クリック計測のコードは変更不要です）。
+
+```js
+export const BROKER_LINKS = [
+  { name: "Broker_A", label: "証券会社A（仮）", url: "https://example.com/broker-a" },
+  // 実際のアフィリエイトURLに差し替える
+];
+export const LINE_LINK = "https://example.com/line";
+```
+
 ## 免責事項
 
 本サイトは性格・価値観に基づいて投資スタイルの傾向を提示するものであり、特定の銘柄の購入を推奨するものではありません。投資の最終判断はご自身の責任で行ってください。

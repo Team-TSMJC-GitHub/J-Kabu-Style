@@ -425,6 +425,33 @@ html, body {
 .action-stack { margin-top: 48px; display: flex; flex-direction: column; gap: 12px; }
 .footnote { text-align: center; font-size: 11px; color: var(--muted-2); line-height: 1.7; margin-top: 40px; }
 
+/* ---------- broker / LINE CTA block (result page) ---------- */
+.broker-block { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--track); }
+.broker-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.broker-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 14px;
+  transition: border-color .2s ease, transform .15s ease;
+}
+.broker-link:hover { border-color: var(--gold); transform: translateY(-2px); }
+.broker-link__arrow { color: var(--gold); }
+.btn--line {
+  display: flex;
+  margin-top: 18px;
+  background: #06C755;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  justify-content: center;
+}
+
 @media (max-width: 380px) {
   .home-hero h1.display { font-size: 44px; }
 }
