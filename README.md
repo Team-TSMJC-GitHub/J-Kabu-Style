@@ -100,7 +100,7 @@ npx serve .
 
 `js/data.js` の `BROKER_LINKS` ・ `BROKER_LINKS_COMING_SOON` ・ `LINE_LINK` を書き換えるだけで、診断結果画面のリンク先が切り替わります（クリック計測のコードは変更不要です）。
 
-- `BROKER_LINKS`：実際に掲載する証券会社。通常のテキストリンク（`{ name, label, url }`）と、ASP（A8.netなど）指定のバナー広告タグ（`{ name, type: "banner", label, url, bannerImg, bannerWidth, bannerHeight, impressionPixel }`）の両方に対応。バナー広告は提携先が指定した画像URL・幅高さ・`rel="nofollow"`・インプレッション計測用ピクセルをそのまま使用する必要があるため、差し替える際は提携先から発行されたタグの値をそのまま設定してください。
+- `BROKER_LINKS`：実際に掲載する証券会社。通常のテキストリンク（`{ name, label, url }`）と、ASP（A8.netなど）指定のバナー広告タグ（`{ name, type: "banner", label, url, bannerImg, bannerWidth, bannerHeight, impressionPixel }`）の両方に対応。バナー広告は提携先が指定した画像URL・幅高さ・`rel="nofollow"`・インプレッション計測用ピクセルをそのまま使用する必要があるため、差し替える際は提携先から発行されたタグの値をそのまま設定してください。バナー画像が読み込めない場合（広告ブロッカー等）は自動的にテキストリンク（「口座を見る ↗」）にフォールバックし、リンク切れのような見た目にならないようにしています。
 - `BROKER_LINKS_COMING_SOON`：まだリンクが用意できていない提携先（審査中など）を「近日公開」として表示する枠。承認が下りたら該当エントリを削除し、`BROKER_LINKS` に追加してください。
 
 ```js

@@ -455,7 +455,17 @@ html, body {
 .broker-card__label { font-size: 13.5px; color: var(--cream); }
 .broker-link--banner { display: inline-flex; border: none; padding: 0; background: none; }
 .broker-link--banner:hover { transform: none; border: none; }
-.broker-link--banner img { display: block; border-radius: 2px; }
+.broker-link--banner img { display: block; border-radius: 2px; max-width: 100%; height: auto; }
+.broker-link__fallback {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 13px;
+  white-space: nowrap;
+}
 .broker-impression-pixel { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
 .broker-card--soon {

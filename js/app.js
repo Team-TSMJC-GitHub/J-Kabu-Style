@@ -474,7 +474,8 @@ function renderResult() {
                 <div class="broker-card broker-card--banner">
                   <span class="broker-card__label">${esc(b.label)}</span>
                   <a href="${esc(b.url)}" target="_blank" rel="nofollow noopener" class="broker-link broker-link--banner" data-broker="${esc(b.name)}">
-                    <img border="0" width="${b.bannerWidth}" height="${b.bannerHeight}" alt="" src="${esc(b.bannerImg)}">
+                    <img border="0" width="${b.bannerWidth}" height="${b.bannerHeight}" alt="" src="${esc(b.bannerImg)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span class="broker-link__fallback">口座を見る ↗</span>
                   </a>
                 </div>
                 <img border="0" width="1" height="1" src="${esc(b.impressionPixel)}" alt="" class="broker-impression-pixel">`;

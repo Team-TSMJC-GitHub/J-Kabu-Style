@@ -181,15 +181,43 @@ export const BROKER_LINKS = [
     bannerImg: "https://www25.a8.net/svt/bgt?aid=260816299702&wid=002&eno=01&mid=s00000008903007005000&mc=1",
     bannerWidth: 100,
     bannerHeight: 60,
-    // ASP側のインプレッション（表示）計測用トラッキングピクセル。バナーが画面に表示されるたびに読み込む。
     impressionPixel: "https://www14.a8.net/0.gif?a8mat=4BA757+BLYC7U+1WP2+15PEXD",
+  },
+  {
+    name: "Partner_2",
+    type: "banner",
+    label: "証券口座を開設する",
+    url: "https://px.a8.net/svt/ejp?a8mat=4BA757+BRWO9M+3XCC+BZ8OX",
+    bannerImg: "https://www21.a8.net/svt/bgt?aid=260816299712&wid=002&eno=01&mid=s00000018318002012000&mc=1",
+    bannerWidth: 100,
+    bannerHeight: 60,
+    impressionPixel: "https://www12.a8.net/0.gif?a8mat=4BA757+BRWO9M+3XCC+BZ8OX",
+  },
+  {
+    name: "Partner_3",
+    type: "banner",
+    label: "証券口座を開設する",
+    url: "https://px.a8.net/svt/ejp?a8mat=4BA757+CRMOKA+3XCC+669JL",
+    bannerImg: "https://www22.a8.net/svt/bgt?aid=260816299772&wid=002&eno=01&mid=s00000018318001037000&mc=1",
+    bannerWidth: 468,
+    bannerHeight: 60,
+    impressionPixel: "https://www19.a8.net/0.gif?a8mat=4BA757+CRMOKA+3XCC+669JL",
+  },
+  {
+    name: "Partner_4",
+    type: "banner",
+    label: "証券口座を開設する",
+    url: "https://px.a8.net/svt/ejp?a8mat=4BA757+BLYC7U+1WP2+15PMN5",
+    bannerImg: "https://www29.a8.net/svt/bgt?aid=260816299702&wid=002&eno=01&mid=s00000008903007006000&mc=1",
+    bannerWidth: 234,
+    bannerHeight: 60,
+    impressionPixel: "https://www10.a8.net/0.gif?a8mat=4BA757+BLYC7U+1WP2+15PMN5",
   },
 ];
 
 // 提携申請中で、まだリンクが用意できていない証券会社の枠（承認が下り次第 BROKER_LINKS に追加する）。
-export const BROKER_LINKS_COMING_SOON = [
-  { label: "証券会社B（提携申請中）" },
-  { label: "証券会社C（提携申請中）" },
-];
+// 現時点で全提携先が承認済みのため空。今後、審査中の提携先が出てきたら
+// { label: "証券会社◯（提携申請中）" } の形で追加する。
+export const BROKER_LINKS_COMING_SOON = [];
 
 export const LINE_LINK = "https://example.com/line"; // LINE公式アカウント開設後にURLを差し替える
