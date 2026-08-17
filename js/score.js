@@ -1,4 +1,4 @@
-import { MAIN_QUESTIONS, SCALE_MAX } from "./data.js";
+import { MAIN_QUESTIONS, SCALE_MAX } from "./data.js?v=20260817";
 
 /**
  * mainAnswers: { [questionId]: aPoints(0-SCALE_MAX) }

@@ -1,7 +1,7 @@
-import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, BROKER_LINKS, BROKER_LINKS_COMING_SOON, LINE_LINK, TOTAL_STEPS } from "./data.js";
-import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js";
-import { renderRadarSVG } from "./radar.js";
-import { trackEvent, trackPageView, trackOutboundClick } from "./analytics.js";
+import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, BROKER_LINKS, BROKER_LINKS_COMING_SOON, LINE_LINK, TOTAL_STEPS } from "./data.js?v=20260817";
+import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js?v=20260817";
+import { renderRadarSVG } from "./radar.js?v=20260817";
+import { trackEvent, trackPageView, trackOutboundClick } from "./analytics.js?v=20260817";
 
 const root = document.getElementById("app");
 
