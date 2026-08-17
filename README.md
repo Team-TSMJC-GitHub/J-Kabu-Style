@@ -98,12 +98,26 @@ npx serve .
 
 ### 証券会社・LINEリンクの差し替え方
 
-`js/data.js` の `BROKER_LINKS` ・ `LINE_LINK` を書き換えるだけで、診断結果画面のリンク先が切り替わります（クリック計測のコードは変更不要です）。
+`js/data.js` の `BROKER_LINKS` ・ `BROKER_LINKS_COMING_SOON` ・ `LINE_LINK` を書き換えるだけで、診断結果画面のリンク先が切り替わります（クリック計測のコードは変更不要です）。
+
+- `BROKER_LINKS`：実際に掲載する証券会社。通常のテキストリンク（`{ name, label, url }`）と、ASP（A8.netなど）指定のバナー広告タグ（`{ name, type: "banner", label, url, bannerImg, bannerWidth, bannerHeight, impressionPixel }`）の両方に対応。バナー広告は提携先が指定した画像URL・幅高さ・`rel="nofollow"`・インプレッション計測用ピクセルをそのまま使用する必要があるため、差し替える際は提携先から発行されたタグの値をそのまま設定してください。
+- `BROKER_LINKS_COMING_SOON`：まだリンクが用意できていない提携先（審査中など）を「近日公開」として表示する枠。承認が下りたら該当エントリを削除し、`BROKER_LINKS` に追加してください。
 
 ```js
 export const BROKER_LINKS = [
-  { name: "Broker_A", label: "証券会社A（仮）", url: "https://example.com/broker-a" },
-  // 実際のアフィリエイトURLに差し替える
+  {
+    name: "Partner_1",
+    type: "banner",
+    label: "証券口座を開設する",
+    url: "https://px.a8.net/svt/ejp?a8mat=...",
+    bannerImg: "https://www25.a8.net/svt/bgt?...",
+    bannerWidth: 100,
+    bannerHeight: 60,
+    impressionPixel: "https://www14.a8.net/0.gif?a8mat=...",
+  },
+];
+export const BROKER_LINKS_COMING_SOON = [
+  { label: "証券会社B（提携申請中）" },
 ];
 export const LINE_LINK = "https://example.com/line";
 ```

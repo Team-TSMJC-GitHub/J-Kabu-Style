@@ -442,6 +442,36 @@ html, body {
 }
 .broker-link:hover { border-color: var(--gold); transform: translateY(-2px); }
 .broker-link__arrow { color: var(--gold); }
+
+.broker-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+.broker-card--banner { flex-wrap: wrap; gap: 10px; }
+.broker-card__label { font-size: 13.5px; color: var(--cream); }
+.broker-link--banner { display: inline-flex; border: none; padding: 0; background: none; }
+.broker-link--banner:hover { transform: none; border: none; }
+.broker-link--banner img { display: block; border-radius: 2px; }
+.broker-impression-pixel { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.broker-card--soon {
+  color: var(--muted-2);
+  border-style: dashed;
+  background: transparent;
+}
+.broker-card__soon-badge {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted-2);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
 .btn--line {
   display: flex;
   margin-top: 18px;

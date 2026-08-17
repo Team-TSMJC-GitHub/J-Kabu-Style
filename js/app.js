@@ -1,4 +1,4 @@
-import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, BROKER_LINKS, LINE_LINK, TOTAL_STEPS } from "./data.js";
+import { MAIN_QUESTIONS, SCALE, SCALE_DEFAULT_HINT, SECTOR_QUESTIONS, TYPES, AXIS_META, GROUPS, BROKER_LINKS, BROKER_LINKS_COMING_SOON, LINE_LINK, TOTAL_STEPS } from "./data.js";
 import { computeAxisPercents, computeTypeCode, computeDNA, computeSectorTop } from "./score.js";
 import { renderRadarSVG } from "./radar.js";
 import { trackEvent, trackPageView, trackOutboundClick } from "./analytics.js";
@@ -466,15 +466,32 @@ function renderResult() {
       </div>
 
       <div class="broker-block">
-        <p class="mono accent label">${esc(type.jp)}タイプにおすすめの証券会社（準備中）</p>
+        <p class="mono accent label">${esc(type.jp)}タイプにおすすめの証券口座</p>
         <div class="broker-list">
-          ${BROKER_LINKS.map((b) => `
-            <a href="${esc(b.url)}" target="_blank" rel="noopener noreferrer" class="broker-link" data-broker="${esc(b.name)}">
+          ${BROKER_LINKS.map((b) => {
+            if (b.type === "banner") {
+              return `
+                <div class="broker-card broker-card--banner">
+                  <span class="broker-card__label">${esc(b.label)}</span>
+                  <a href="${esc(b.url)}" target="_blank" rel="nofollow noopener" class="broker-link broker-link--banner" data-broker="${esc(b.name)}">
+                    <img border="0" width="${b.bannerWidth}" height="${b.bannerHeight}" alt="" src="${esc(b.bannerImg)}">
+                  </a>
+                </div>
+                <img border="0" width="1" height="1" src="${esc(b.impressionPixel)}" alt="" class="broker-impression-pixel">`;
+            }
+            return `
+              <a href="${esc(b.url)}" target="_blank" rel="noopener noreferrer" class="broker-link" data-broker="${esc(b.name)}">
+                <span>${esc(b.label)}</span>
+                <span class="broker-link__arrow">↗</span>
+              </a>`;
+          }).join("")}
+          ${BROKER_LINKS_COMING_SOON.map((b) => `
+            <div class="broker-card broker-card--soon">
               <span>${esc(b.label)}</span>
-              <span class="broker-link__arrow">↗</span>
-            </a>`).join("")}
+              <span class="mono broker-card__soon-badge">近日公開</span>
+            </div>`).join("")}
         </div>
-        <p class="disclaimer">※現在は仮リンクです。正式なサービス開始まで実際の口座開設はできません。</p>
+        <p class="disclaimer">※本ページの証券会社リンクにはアフィリエイトリンクを含みます。</p>
 
         <a href="${esc(LINE_LINK)}" target="_blank" rel="noopener noreferrer" id="line-link" class="btn btn--line btn--block">LINE公式アカウントで最新情報を受け取る（準備中）</a>
       </div>

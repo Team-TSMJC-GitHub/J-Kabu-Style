@@ -164,15 +164,32 @@ export const TOTAL_STEPS = MAIN_QUESTIONS.length + SECTOR_QUESTIONS.length; // 3
 
 /**
  * 証券会社・LINE公式アカウントへの送客リンク。
- * 現時点では仮URLだが、実際のアフィリエイトURL・LINE公式アカウントURLが決まり次第、
- * ここを書き換えるだけで全画面（診断結果画面）のリンク先が切り替わる。
- * クリック計測（js/analytics.js の trackOutboundClick）はURLの中身に依存しないため、
- * 差し替えてもGA4計測は壊れない。
+ * 実際のアフィリエイトURL・LINE公式アカウントURLが決まり次第、ここを書き換えるだけで
+ * 診断結果画面のリンク先が切り替わる。クリック計測（js/analytics.js の trackOutboundClick）は
+ * URLの中身に依存しないため、差し替えてもGA4計測は壊れない。
+ *
+ * type: "banner" の場合、ASP（A8.netなど）指定のバナー広告タグをそのまま使用する。
+ * バナー広告はリンク先URL・画像URL・幅高さ・rel="nofollow"・インプレッション計測用の1x1ピクセルなど、
+ * 提携先が指定した形式を1文字も変えずに掲載する必要がある（変更すると成果計測が正しく行われない）。
  */
 export const BROKER_LINKS = [
-  { name: "Broker_A", label: "証券会社A（仮）", url: "https://example.com/broker-a" },
-  { name: "Broker_B", label: "証券会社B（仮）", url: "https://example.com/broker-b" },
-  { name: "Broker_C", label: "証券会社C（仮）", url: "https://example.com/broker-c" },
+  {
+    name: "Partner_1",
+    type: "banner",
+    label: "証券口座を開設する",
+    url: "https://px.a8.net/svt/ejp?a8mat=4BA757+BLYC7U+1WP2+15PEXD",
+    bannerImg: "https://www25.a8.net/svt/bgt?aid=260816299702&wid=002&eno=01&mid=s00000008903007005000&mc=1",
+    bannerWidth: 100,
+    bannerHeight: 60,
+    // ASP側のインプレッション（表示）計測用トラッキングピクセル。バナーが画面に表示されるたびに読み込む。
+    impressionPixel: "https://www14.a8.net/0.gif?a8mat=4BA757+BLYC7U+1WP2+15PEXD",
+  },
+];
+
+// 提携申請中で、まだリンクが用意できていない証券会社の枠（承認が下り次第 BROKER_LINKS に追加する）。
+export const BROKER_LINKS_COMING_SOON = [
+  { label: "証券会社B（提携申請中）" },
+  { label: "証券会社C（提携申請中）" },
 ];
 
 export const LINE_LINK = "https://example.com/line"; // LINE公式アカウント開設後にURLを差し替える
